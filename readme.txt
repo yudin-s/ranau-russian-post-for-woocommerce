@@ -1,10 +1,10 @@
 === Ranau Russian Post for WooCommerce ===
-Contributors: yudin-s
+Contributors: yudins
 Tags: woocommerce, shipping, russian post, pickup, delivery
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,10 @@ Community issues: https://github.com/yudin-s/ranau-russian-post-for-woocommerce/
 Optional paid support and custom WooCommerce development are available from Ranau at https://ranau.uk/ and are not required to use the plugin.
 
 == Changelog ==
+
+= 0.1.1 =
+
+* Corrected the WordPress.org contributor account.
 
 = 0.1.0 =
 

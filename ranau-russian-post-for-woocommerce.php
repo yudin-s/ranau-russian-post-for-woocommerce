@@ -3,7 +3,7 @@
  * Plugin Name: Ranau Russian Post for WooCommerce
  * Plugin URI:  https://ranau.uk/wordpress/ranau-russian-post-for-woocommerce/
  * Description: Tariff calculation and OPS selection for Russian Post without shipment creation.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires at least: 6.9
  * Requires PHP: 7.4
  * Author: Ranau
@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 defined('ABSPATH') || exit;
 
-define('RANAU_RUSSIAN_POST_VERSION', '0.1.0');
+define('RANAU_RUSSIAN_POST_VERSION', '0.1.1');
 define('RANAU_RUSSIAN_POST_FILE', __FILE__);
 define('RANAU_RUSSIAN_POST_DIR', plugin_dir_path(__FILE__));
 define('RANAU_RUSSIAN_POST_URL', plugin_dir_url(__FILE__));
