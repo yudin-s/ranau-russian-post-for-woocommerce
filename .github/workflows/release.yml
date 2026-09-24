@@ -1,0 +1,40 @@
+name: Release ZIP
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+          tools: wp-cli
+
+      - name: Install dist archive command
+        run: wp package install wp-cli/dist-archive-command:@stable
+
+      - name: Build and verify release ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          slug="${GITHUB_REPOSITORY#*/}"
+          version="$(sed -n 's/^[[:space:]*]*Version:[[:space:]]*\([^[:space:]]*\).*$/\1/p' "$slug.php" | head -n 1)"
+          test "$GITHUB_REF_NAME" = "v$version"
+          wp dist-archive . "$slug-$version.zip"
+          unzip -t "$slug-$version.zip"
+          shasum -a 256 "$slug-$version.zip" > "$slug-$version.zip.sha256"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" ./*.zip ./*.zip.sha256 --verify-tag --generate-notes

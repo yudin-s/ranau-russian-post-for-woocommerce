@@ -1,0 +1,13 @@
+.git
+.github
+.distignore
+README.md
+RELEASING.md
+SECURITY.md
+CONTRIBUTING.md
+tests
+phpcs.xml.dist
+composer.json
+composer.lock
+node_modules
+vendor

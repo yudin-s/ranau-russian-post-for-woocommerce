@@ -1,0 +1,49 @@
+name: Plugin CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+          tools: wp-cli
+
+      - name: PHP syntax
+        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Contract tests
+        run: node tests/contract.test.js
+
+      - name: Install dist archive command
+        run: wp package install wp-cli/dist-archive-command:@stable
+
+      - name: Build release ZIP
+        run: |
+          wp dist-archive . ./ranau-russian-post-for-woocommerce.zip
+          mkdir -p plugin-build
+          unzip -q ranau-russian-post-for-woocommerce.zip -d plugin-build
+
+      - name: WordPress Plugin Check
+        uses: WordPress/plugin-check-action@v1
+        with:
+          build-dir: './plugin-build/ranau-russian-post-for-woocommerce'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ranau-russian-post-for-woocommerce
+          path: ranau-russian-post-for-woocommerce.zip
