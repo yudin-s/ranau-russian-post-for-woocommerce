@@ -16,10 +16,13 @@ This repository is the public source of the plugin. The WordPress.org release ar
 From this repository root:
 
 ```sh
-wp package install wp-cli/dist-archive-command:@stable
 slug="$(basename "$PWD")"
+repo_root="$PWD"
 version="$(sed -n 's/^[[:space:]*]*Version:[[:space:]]*\([^[:space:]]*\).*$/\1/p' "$slug.php" | head -n 1)"
-wp dist-archive . "./$slug-$version.zip"
+staging="$(mktemp -d)"
+mkdir -p "$staging/$slug"
+rsync -a --exclude-from=.distignore --exclude='/*.zip' ./ "$staging/$slug/"
+(cd "$staging" && zip -q -r "$repo_root/$slug-$version.zip" "$slug")
 unzip -t "./$slug-$version.zip"
 shasum -a 256 "./$slug-$version.zip"
 ```

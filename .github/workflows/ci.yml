@@ -17,7 +17,6 @@ jobs:
         with:
           php-version: '7.4'
           coverage: none
-          tools: wp-cli
 
       - name: PHP syntax
         run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
@@ -29,14 +28,13 @@ jobs:
       - name: Contract tests
         run: node tests/contract.test.js
 
-      - name: Install dist archive command
-        run: wp package install wp-cli/dist-archive-command:@stable
-
       - name: Build release ZIP
         run: |
-          wp dist-archive . ./ranau-russian-post-for-woocommerce.zip
-          mkdir -p plugin-build
-          unzip -q ranau-russian-post-for-woocommerce.zip -d plugin-build
+          slug="${GITHUB_REPOSITORY#*/}"
+          mkdir -p "plugin-build/$slug"
+          rsync -a --exclude-from=.distignore --exclude='/plugin-build/' --exclude='/*.zip' ./ "plugin-build/$slug/"
+          (cd plugin-build && zip -q -r "../$slug.zip" "$slug")
+          unzip -t "$slug.zip"
 
       - name: WordPress Plugin Check
         uses: WordPress/plugin-check-action@v1

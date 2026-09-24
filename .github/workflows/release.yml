@@ -18,10 +18,6 @@ jobs:
         with:
           php-version: '7.4'
           coverage: none
-          tools: wp-cli
-
-      - name: Install dist archive command
-        run: wp package install wp-cli/dist-archive-command:@stable
 
       - name: Build and verify release ZIP
         shell: bash
@@ -30,7 +26,10 @@ jobs:
           slug="${GITHUB_REPOSITORY#*/}"
           version="$(sed -n 's/^[[:space:]*]*Version:[[:space:]]*\([^[:space:]]*\).*$/\1/p' "$slug.php" | head -n 1)"
           test "$GITHUB_REF_NAME" = "v$version"
-          wp dist-archive . "$slug-$version.zip"
+          staging="$(mktemp -d)"
+          mkdir -p "$staging/$slug"
+          rsync -a --exclude-from=.distignore --exclude='/*.zip' ./ "$staging/$slug/"
+          (cd "$staging" && zip -q -r "$GITHUB_WORKSPACE/$slug-$version.zip" "$slug")
           unzip -t "$slug-$version.zip"
           shasum -a 256 "$slug-$version.zip" > "$slug-$version.zip.sha256"
 
